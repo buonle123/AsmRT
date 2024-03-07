@@ -33,6 +33,8 @@ const getCoffeeList = (category: string, data: any) => {
 const HomeScreen = ({ navigation }: any) => {
   const CoffeeList = useStore((state: any) => state.CoffeeList);
   const BeanList = useStore((state: any) => state.BeanList);
+  const addToCart = useStore((state: any) => state.addToCart)
+  const calculateCartPrice = useStore((state: any) => state.calculateCartPrice)
   const [categories, setCategories] = useState(getCategoriesFromData(CoffeeList))
   const [searchText, setSearchText] = useState('')
   const [categoryIndex, setcategoryIndex] = useState({
@@ -60,16 +62,35 @@ const HomeScreen = ({ navigation }: any) => {
     setSortedCoffee([...CoffeeList])
     setSearchText('')
   }
-  // useEffect(() => {
-  //   if (searchText.length === 0) {
-  //     setcategoryIndex({ index: 0, category: categories[0] })
-  //   }
-  // }, [searchText])
   useEffect(() => {
     if (searchText.length === 0) {
       setSortedCoffee(getCoffeeList(categoryIndex.category, CoffeeList));
     }
   }, [searchText]);
+
+
+  const homeAddToCartHandler = ({
+    id,
+    index,
+    name,
+    roasted,
+    imagelink_square,
+    special_ingredient,
+    type,
+    prices,
+  }: any) => {
+    addToCart({
+      id,
+      index,
+      name,
+      roasted,
+      imagelink_square,
+      special_ingredient,
+      type,
+      prices,
+    })
+    calculateCartPrice()
+  }
   return (
     <View style={styles.ScreenContainer}>
       <StatusBar backgroundColor={COLORS.primaryBlackHex} />
@@ -116,12 +137,13 @@ const HomeScreen = ({ navigation }: any) => {
               id={item.id}
               index={item.index}
               type={item.type}
-              rosted={item.rosted}
+              roasted={item.roasted}
               imagelink_square={item.imagelink_square}
               name={item.name}
               special_ingredient={item.special_ingredient}
               average_rating={item.average_rating}
               price={item.prices[0]}
+              buttonPressHandler={homeAddToCartHandler}
             />
           </TouchableOpacity>
         }} />
@@ -132,12 +154,13 @@ const HomeScreen = ({ navigation }: any) => {
               id={item.id}
               index={item.index}
               type={item.type}
-              rosted={item.rosted}
+              roasted={item.roasted}
               imagelink_square={item.imagelink_square}
               name={item.name}
               special_ingredient={item.special_ingredient}
               average_rating={item.average_rating}
               price={item.prices[0]}
+              buttonPressHandler={homeAddToCartHandler}
             />
           </TouchableOpacity>
         }} />
